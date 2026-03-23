@@ -313,6 +313,8 @@ Return ONLY a JSON object:
     "Question 2 text here",
     "Question 3 text here",
     "Question 4 text here"
+    "Question 5 text here"
+
   ]
 }
 Make questions practical and specific to the weak areas. Return ONLY valid JSON."""
@@ -320,7 +322,7 @@ Make questions practical and specific to the weak areas. Return ONLY valid JSON.
     user_message = f"""Student weakness profile:
 {memory_context}
 
-Generate 4 targeted practice questions to help this student improve."""
+Generate 5 targeted practice questions to help this student improve."""
 
     raw = await call_groq(system_prompt, user_message)
     parsed = parse_json_from_llm(raw)

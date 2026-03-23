@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — AI Coding Mentor</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="auth-bg">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="logo-icon">AI</div>
+        <span>Coding Mentor</span>
+      </div>
+      <h2>Welcome back</h2>
+      <p class="subtitle">Sign in to continue your practice session</p>
+
+      <div class="alert alert-error" id="error-msg"></div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+
+      <button class="btn btn-primary btn-full" id="login-btn" onclick="doLogin()">
+        Sign In
+      </button>
+
+      <div class="auth-footer">
+        Don't have an account? <a href="signup.html">Create one</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    fetch('/api/me').then(r => r.json()).then(d => {
+      if (d.userId) window.location.href = 'index.html';
+    }).catch(() => {});
+
+    async function doLogin() {
+      const btn = document.getElementById('login-btn');
+      const err = document.getElementById('error-msg');
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      err.classList.remove('show');
+      if (!email || !password) {
+        err.textContent = 'Please fill in all fields.';
+        err.classList.add('show'); return;
+      }
+
+      btn.disabled = true; btn.textContent = 'Signing in…';
+
+      try {
+        const res = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          window.location.href = 'index.html';
+        } else {
+          err.textContent = data.message || 'Invalid credentials.';
+          err.classList.add('show');
+        }
+      } catch (e) {
+        err.textContent = 'Server error. Is the Node backend running?';
+        err.classList.add('show');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Sign In';
+      }
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  </script>
+</body>
+</html>

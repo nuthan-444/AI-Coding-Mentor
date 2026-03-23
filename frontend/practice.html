@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Practice — AI Coding Mentor</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon">AI</div>
+    Coding Mentor
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Dashboard</a>
+    <a href="practice.html" class="nav-link active">Practice</a>
+  </div>
+  <div class="nav-user">
+    <span id="nav-email" style="font-family:var(--mono);font-size:0.8rem;"></span>
+    <button class="btn btn-danger" style="padding:0.4rem 0.85rem;font-size:0.8rem;" onclick="doLogout()">Logout</button>
+  </div>
+</nav>
+
+<div class="dashboard">
+  <div class="sidebar">
+    <div class="sidebar-section-title">Menu</div>
+    <a class="sidebar-link" href="index.html"><span class="icon">🏠</span> Dashboard</a>
+    <a class="sidebar-link active" href="practice.html"><span class="icon">🧪</span> Practice Test</a>
+    <div class="sidebar-section-title" style="margin-top:1rem;">Session</div>
+    <a class="sidebar-link" href="#" onclick="doLogout()"><span class="icon">🚪</span> Logout</a>
+  </div>
+
+  <div class="main-content">
+    <div class="page-header">
+      <h1>Practice Test</h1>
+      <p class="desc">Questions tailored to your identified weaknesses.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🎯 Generate Practice Questions</div>
+      </div>
+      <p style="font-size:0.875rem;color:var(--text-muted);margin-bottom:1rem;">
+        The AI will look at your past mistakes and create targeted questions to help you improve.
+      </p>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="generateTest()">⚡ Generate Questions</button>
+        <button class="btn btn-secondary" onclick="clearResults()">Clear</button>
+      </div>
+    </div>
+
+    <div id="questions-container"></div>
+
+    <div id="submit-section" style="display:none;" class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <h3 style="margin-bottom:0.3rem;">Done answering?</h3>
+          <p style="color:var(--text-muted);font-size:0.875rem;">Submit all answers for AI evaluation.</p>
+        </div>
+        <button class="btn btn-primary" onclick="submitAll()">📤 Submit All Answers</button>
+      </div>
+    </div>
+
+    <div id="results-container"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="loading-overlay" id="loading">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <p id="loading-text">Generating questions…</p>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  checkAuth();
+  let currentQuestions = [];
+
+  async function generateTest() {
+    showLoading('Generating personalized questions…');
+    clearResults();
+
+    try {
+      const res = await fetch('/practice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to generate');
+
+      currentQuestions = data.questions || [];
+      if (!currentQuestions.length) {
+        showToast('No weaknesses found. Analyze some code first!', 'error');
+        return;
+      }
+
+      renderQuestions(currentQuestions);
+      document.getElementById('submit-section').style.display = 'block';
+      showToast('Questions ready!', 'success');
+    } catch (e) {
+      showToast('Error: ' + e.message, 'error');
+    } finally {
+      hideLoading();
+    }
+  }
+
+  function renderQuestions(questions) {
+    const container = document.getElementById('questions-container');
+    container.innerHTML = questions.map((q, i) => `
+      <div class="question-card fade-in" id="qcard-${i}">
+        <div class="question-number">Question ${i + 1} of ${questions.length}</div>
+        <div class="question-text">${escHtml(typeof q === 'string' ? q : q.question || q.text || JSON.stringify(q))}</div>
+        <label>Your Answer</label>
+        <textarea class="answer-area" id="answer-${i}" placeholder="Write your code or explanation here…"></textarea>
+        <div id="result-${i}"></div>
+      </div>
+    `).join('');
+  }
+
+  async function submitAll() {
+    if (!currentQuestions.length) { showToast('Generate questions first!', 'error'); return; }
+
+    showLoading('Evaluating your answers…');
+    const resultsContainer = document.getElementById('results-container');
+    resultsContainer.innerHTML = '';
+    let correct = 0;
+
+    for (let i = 0; i < currentQuestions.length; i++) {
+      const answer = document.getElementById(`answer-${i}`)?.value.trim() || '';
+      const question = typeof currentQuestions[i] === 'string'
+        ? currentQuestions[i]
+        : currentQuestions[i].question || currentQuestions[i].text;
+
+      try {
+        const res = await fetch('/submit-test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question, answer, questionIndex: i })
+        });
+        const data = await res.json();
+        const isCorrect = data.correct;
+        if (isCorrect) correct++;
+
+        const resultEl = document.getElementById(`result-${i}`);
+        if (resultEl) {
+          resultEl.innerHTML = `
+            <div class="result-badge ${isCorrect ? 'correct' : 'wrong'}">
+              ${isCorrect ? '✅ Correct' : '❌ Incorrect'}
+            </div>
+            ${data.explanation
+              ? `<p style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-muted);line-height:1.7;">${escHtml(data.explanation)}</p>`
+              : ''}
+          `;
+        }
+      } catch (e) {
+        const resultEl = document.getElementById(`result-${i}`);
+        if (resultEl) resultEl.innerHTML = `<span style="color:var(--danger);font-size:0.85rem;">Evaluation failed: ${escHtml(e.message)}</span>`;
+      }
+    }
+
+    hideLoading();
+    const pct = Math.round((correct / currentQuestions.length) * 100);
+    resultsContainer.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <div style="font-family:var(--display);font-size:3rem;font-weight:800;color:${pct >= 70 ? 'var(--accent)' : 'var(--warning)'};">${pct}%</div>
+        <div style="color:var(--text-muted);margin-top:0.3rem;">${correct} / ${currentQuestions.length} correct</div>
+        <div class="progress-bar" style="margin:1rem auto;max-width:300px;">
+          <div class="progress-fill" style="width:${pct}%"></div>
+        </div>
+        <p style="color:var(--text-muted);font-size:0.875rem;margin-top:0.5rem;">
+          ${pct >= 80 ? '🎉 Excellent work!' : pct >= 50 ? '📈 Good effort! Review the incorrect ones.' : '📚 More practice needed.'}
+        </p>
+      </div>
+    `;
+    document.getElementById('submit-section').style.display = 'none';
+    showToast(`Test complete! Score: ${pct}%`, pct >= 70 ? 'success' : 'error');
+  }
+
+  function clearResults() {
+    document.getElementById('questions-container').innerHTML = '';
+    document.getElementById('results-container').innerHTML = '';
+    document.getElementById('submit-section').style.display = 'none';
+    currentQuestions = [];
+  }
+</script>
+</body>
+</html>

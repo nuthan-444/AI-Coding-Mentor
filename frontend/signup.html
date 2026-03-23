@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up — AI Coding Mentor</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="auth-bg">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="logo-icon">AI</div>
+        <span>Coding Mentor</span>
+      </div>
+      <h2>Create account</h2>
+      <p class="subtitle">Start learning smarter with AI that remembers your mistakes</p>
+
+      <div class="alert alert-error" id="error-msg"></div>
+      <div class="alert alert-success" id="success-msg"></div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Min 6 characters" autocomplete="new-password" />
+      </div>
+      <div class="form-group">
+        <label for="confirm">Confirm Password</label>
+        <input type="password" id="confirm" placeholder="Re-enter password" autocomplete="new-password" />
+      </div>
+
+      <button class="btn btn-primary btn-full" id="signup-btn" onclick="doSignup()">
+        Create Account
+      </button>
+
+      <div class="auth-footer">
+        Already have an account? <a href="login.html">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function doSignup() {
+      const btn = document.getElementById('signup-btn');
+      const err = document.getElementById('error-msg');
+      const suc = document.getElementById('success-msg');
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm').value;
+
+      err.classList.remove('show'); suc.classList.remove('show');
+
+      if (!email || !password || !confirm) {
+        err.textContent = 'Please fill in all fields.';
+        err.classList.add('show'); return;
+      }
+      if (password.length < 6) {
+        err.textContent = 'Password must be at least 6 characters.';
+        err.classList.add('show'); return;
+      }
+      if (password !== confirm) {
+        err.textContent = 'Passwords do not match.';
+        err.classList.add('show'); return;
+      }
+
+      btn.disabled = true; btn.textContent = 'Creating…';
+
+      try {
+        const res = await fetch('/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          suc.textContent = 'Account created! Redirecting…';
+          suc.classList.add('show');
+          setTimeout(() => window.location.href = 'index.html', 1200);
+        } else {
+          err.textContent = data.message || 'Signup failed.';
+          err.classList.add('show');
+        }
+      } catch (e) {
+        err.textContent = 'Server error. Is the Node backend running?';
+        err.classList.add('show');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Create Account';
+      }
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') doSignup(); });
+  </script>
+</body>
+</html>

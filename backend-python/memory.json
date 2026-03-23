@@ -1,0 +1,43 @@
+{
+  "69bfea5facbbe64038810b8b": [
+    {
+      "userId": "69bfea5facbbe64038810b8b",
+      "topic": "Loops",
+      "mistake": "OffByOne",
+      "language": "Python",
+      "score": 2
+    }
+  ],
+  "69bff0fb97fe1cbd5ca89f54": [
+    {
+      "userId": "69bff0fb97fe1cbd5ca89f54",
+      "topic": "Syntax and Basics",
+      "mistake": "SyntaxError",
+      "language": "Python",
+      "score": 1
+    }
+  ],
+  "69bff1ab97fe1cbd5ca89f59": [
+    {
+      "userId": "69bff1ab97fe1cbd5ca89f59",
+      "topic": "Syntax and Basics",
+      "mistake": "SyntaxError",
+      "language": "Python",
+      "score": 4
+    },
+    {
+      "userId": "69bff1ab97fe1cbd5ca89f59",
+      "topic": "Variables",
+      "mistake": "UndefinedVariable",
+      "language": "Python",
+      "score": 2
+    },
+    {
+      "userId": "69bff1ab97fe1cbd5ca89f59",
+      "topic": "Loops",
+      "mistake": "OffByOne",
+      "language": "Python",
+      "score": 2
+    }
+  ]
+}

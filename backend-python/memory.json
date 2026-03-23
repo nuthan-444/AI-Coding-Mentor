@@ -6,6 +6,20 @@
       "mistake": "OffByOne",
       "language": "Python",
       "score": 2
+    },
+    {
+      "userId": "69bfea5facbbe64038810b8b",
+      "topic": "Syntax",
+      "mistake": "SyntaxError",
+      "language": "Python",
+      "score": 7
+    },
+    {
+      "userId": "69bfea5facbbe64038810b8b",
+      "topic": "Syntax",
+      "mistake": "Typo",
+      "language": "javascript",
+      "score": 2
     }
   ],
   "69bff0fb97fe1cbd5ca89f54": [

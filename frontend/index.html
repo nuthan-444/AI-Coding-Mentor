@@ -1,275 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard — AI Coding Mentor</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-<!-- ── Nav ── -->
-<nav class="nav">
-  <a href="index.html" class="nav-logo">
-    <div class="logo-icon">AI</div>
-    Coding Mentor
-  </a>
-  <div class="nav-links">
-    <a href="index.html" class="nav-link active">Dashboard</a>
-    <a href="practice.html" class="nav-link">Practice</a>
-  </div>
-  <div class="nav-user">
-    <span id="nav-email" style="font-family:var(--mono);font-size:0.8rem;"></span>
-    <button class="btn btn-danger" style="padding:0.4rem 0.85rem;font-size:0.8rem;" onclick="doLogout()">Logout</button>
-  </div>
-</nav>
+  <!-- ── Nav ── -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon">AI</div>
+      Coding Mentor
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link active">Dashboard</a>
+      <a href="practice.html" class="nav-link">Practice</a>
+    </div>
+    <div class="nav-user">
+      <span id="nav-email" style="font-family:var(--mono);font-size:0.8rem;"></span>
+      <button class="btn btn-danger" style="padding:0.4rem 0.85rem;font-size:0.8rem;"
+        onclick="doLogout()">Logout</button>
+    </div>
+  </nav>
 
-<!-- ── Dashboard ── -->
-<div class="dashboard">
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <div class="sidebar-section-title">Menu</div>
-    <a class="sidebar-link active" href="index.html"><span class="icon">🏠</span> Dashboard</a>
-    <a class="sidebar-link" href="practice.html"><span class="icon">🧪</span> Practice Test</a>
-    <div class="sidebar-section-title" style="margin-top:1rem;">Session</div>
-    <a class="sidebar-link" href="#" onclick="doLogout()"><span class="icon">🚪</span> Logout</a>
-  </div>
-
-  <!-- Main -->
-  <div class="main-content">
-    <div class="page-header">
-      <h1>Dashboard</h1>
-      <p class="desc">Analyze your code and track your weaknesses over time.</p>
+  <!-- ── Dashboard ── -->
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-section-title">Menu</div>
+      <a class="sidebar-link active" href="index.html"><span class="icon">🏠</span> Dashboard</a>
+      <a class="sidebar-link" href="practice.html"><span class="icon">🧪</span> Practice Test</a>
+      <div class="sidebar-section-title" style="margin-top:1rem;">Session</div>
+      <a class="sidebar-link" href="#" onclick="doLogout()"><span class="icon">🚪</span> Logout</a>
     </div>
 
-    <!-- Stats -->
-    <div class="stats-row" id="stats-row">
-      <div class="stat-card">
-        <div class="stat-value" id="stat-analyses">—</div>
-        <div class="stat-label">Analyses</div>
+    <!-- Main -->
+    <div class="main-content">
+      <div class="page-header">
+        <h1>Dashboard</h1>
+        <p class="desc">Analyze your code and track your weaknesses over time.</p>
       </div>
-      <div class="stat-card">
-        <div class="stat-value" id="stat-weaknesses">—</div>
-        <div class="stat-label">Weaknesses</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="stat-score">—</div>
-        <div class="stat-label">Mistake Score</div>
-      </div>
-    </div>
 
-    <!-- Code Analyzer -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">⌨️ Code Analyzer</div>
-        <div style="display:flex;gap:0.5rem;align-items:center;">
+      <!-- Stats -->
+      <div class="stats-row" id="stats-row">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-analyses">—</div>
+          <div class="stat-label">Analyses</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-weaknesses">—</div>
+          <div class="stat-label">Weaknesses</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-score">—</div>
+          <div class="stat-label">Mistake Score</div>
         </div>
       </div>
 
-      <div class="code-toolbar">
-        <div class="code-dots">
-          <div class="code-dot r"></div>
-          <div class="code-dot y"></div>
-          <div class="code-dot g"></div>
+      <!-- Code Analyzer -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">⌨️ Code Analyzer</div>
+          <div style="display:flex;gap:0.5rem;align-items:center;">
+            <select id="lang-select" style="width:140px;padding:0.4rem 2rem 0.4rem 0.75rem;">
+              <option value="python">Python</option>
+              <option value="javascript">JavaScript</option>
+              <option value="java">Java</option>
+              <option value="cpp">C++</option>
+            </select>
+          </div>
         </div>
-        <span class="code-lang-badge" id="lang-badge"></span>
-      </div>
-      <textarea id="code-editor" spellcheck="false" placeholder="# Paste your code here...
+
+        <div class="code-toolbar">
+          <div class="code-dots">
+            <div class="code-dot r"></div>
+            <div class="code-dot y"></div>
+            <div class="code-dot g"></div>
+          </div>
+          <span class="code-lang-badge" id="lang-badge">Python</span>
+        </div>
+        <textarea id="code-editor" spellcheck="false" placeholder="# Paste your code here...
 def example():
     x = 10
     y = 0
     return x / y  # This will cause a ZeroDivisionError!
 "></textarea>
 
-      <div class="btn-row" style="margin-top:1rem;">
-        <button class="btn btn-primary" onclick="analyzeCode()">
-          ⚡ Analyze Code
-        </button>
-        <button class="btn btn-secondary" onclick="clearEditor()">
-          Clear
-        </button>
-      </div>
-    </div>
-
-    <!-- Feedback -->
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">💬 AI Feedback</div>
-        </div>
-        <div class="feedback-panel" id="feedback-panel">
-          <span class="feedback-empty">// Run analysis to see feedback here…</span>
+        <div class="btn-row" style="margin-top:1rem;">
+          <button class="btn btn-primary" onclick="analyzeCode()">
+            ⚡ Analyze Code
+          </button>
+          <button class="btn btn-secondary" onclick="clearEditor()">
+            Clear
+          </button>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">⚠️ Your Weaknesses</div>
-          <button class="btn btn-secondary" style="padding:0.35rem 0.75rem;font-size:0.78rem;" onclick="loadWeaknesses()">Refresh</button>
+      <!-- Feedback -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">💬 AI Feedback</div>
+          </div>
+          <div class="feedback-panel" id="feedback-panel">
+            <span class="feedback-empty">// Run analysis to see feedback here…</span>
+          </div>
         </div>
-        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem;">
-          Topics you've repeatedly struggled with — AI will quiz you on these.
-        </p>
-        <div class="weakness-list" id="weakness-list">
-          <span style="color:var(--text-dim);font-family:var(--mono);font-size:0.8rem;">No weaknesses tracked yet.</span>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">⚠️ Your Weaknesses</div>
+            <button class="btn btn-secondary" style="padding:0.35rem 0.75rem;font-size:0.78rem;"
+              onclick="loadWeaknesses()">Refresh</button>
+          </div>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem;">
+            Topics you've repeatedly struggled with — AI will quiz you on these.
+          </p>
+          <div class="weakness-list" id="weakness-list">
+            <span style="color:var(--text-dim);font-family:var(--mono);font-size:0.8rem;">No weaknesses tracked
+              yet.</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Practice CTA -->
-    <div class="card" style="border-color:rgba(79,255,176,0.15);background:linear-gradient(135deg,rgba(79,255,176,0.04),transparent);">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
-        <div>
-          <h3 style="margin-bottom:0.3rem;">Ready to practice?</h3>
-          <p style="color:var(--text-muted);font-size:0.875rem;">AI will generate questions based on your specific weaknesses.</p>
+      <!-- Practice CTA -->
+      <div class="card"
+        style="border-color:rgba(79,255,176,0.15);background:linear-gradient(135deg,rgba(79,255,176,0.04),transparent);">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+          <div>
+            <h3 style="margin-bottom:0.3rem;">Ready to practice?</h3>
+            <p style="color:var(--text-muted);font-size:0.875rem;">AI will generate questions based on your specific
+              weaknesses.</p>
+          </div>
+          <a href="practice.html" class="btn btn-primary">🧪 Start Practice Test</a>
         </div>
-        <a href="practice.html" class="btn btn-primary">🧪 Start Practice Test</a>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Toast -->
-<div class="toast" id="toast"></div>
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
 
-<!-- Loading overlay -->
-<div class="loading-overlay" id="loading">
-  <div class="loading-box">
-    <div class="spinner"></div>
-    <p id="loading-text">Analyzing your code…</p>
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loading">
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <p id="loading-text">Analyzing your code…</p>
+    </div>
   </div>
-</div>
 
-<!-- ✅ app.js MUST come first before any inline scripts -->
-<script src="app.js"></script>
+  <!-- ✅ app.js MUST come first before any inline scripts -->
+  <script src="app.js"></script>
 
-<script>
-  // ✅ Wrap everything in DOMContentLoaded to ensure app.js is ready
-  document.addEventListener('DOMContentLoaded', async function () {
+  <script>
+    // ✅ Wrap everything in DOMContentLoaded to ensure app.js is ready
+    document.addEventListener('DOMContentLoaded', async function () {
 
-    // ── Auth check ──────────────────────────────────────────
-    try {
-      const res = await fetch('/api/me');
-      const data = await res.json();
-      if (!data.userId) {
+      // ── Auth check ──────────────────────────────────────────
+      try {
+        const res = await fetch('/api/me');
+        const data = await res.json();
+        if (!data.userId) {
+          window.location.href = 'login.html';
+          return; // stop execution
+        }
+        // Show email in nav
+        const emailEl = document.getElementById('nav-email');
+        if (emailEl) emailEl.textContent = data.email || '';
+      } catch (e) {
         window.location.href = 'login.html';
-        return; // stop execution
-      }
-      // Show email in nav
-      const emailEl = document.getElementById('nav-email');
-      if (emailEl) emailEl.textContent = data.email || '';
-    } catch (e) {
-      window.location.href = 'login.html';
-      return;
-    }
-
-    // ── Init page ───────────────────────────────────────────
-    loadWeaknesses();
-
-    // Sync lang badge with selector
-    document.getElementById('lang-select').addEventListener('change', function () {
-      document.getElementById('lang-badge').textContent = this.value;
-    });
-  });
-
-  // ── Analyze Code ─────────────────────────────────────────
-  async function analyzeCode() {
-    const code = document.getElementById('code-editor').value.trim();
-    const language = document.getElementById('lang-select').value;
-    if (!code) { showToast('Please enter some code first.', 'error'); return; }
-
-    showLoading('Analyzing your code with AI…');
-    setFeedback('<div style="display:flex;align-items:center;gap:0.75rem;color:var(--text-muted)"><div class="spinner"></div> Analyzing…</div>');
-
-    try {
-      const res = await fetch('/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, language })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Analysis failed');
-
-      // Render feedback
-      const fb = data.feedback || {};
-      let html = '<div class="feedback-content">';
-      if (fb.errors && fb.errors.length) {
-        html += '<h3>🔴 Errors Found</h3><ul>';
-        fb.errors.forEach(e => html += `<li>${escHtml(e)}</li>`);
-        html += '</ul>';
-      }
-      if (fb.explanation) {
-        html += `<h3>📖 Explanation</h3><p>${escHtml(fb.explanation)}</p>`;
-      }
-      if (fb.mistakes && fb.mistakes.length) {
-        html += '<h3>🏷️ Mistake Types</h3><ul>';
-        fb.mistakes.forEach(m => html += `<li><strong>${escHtml(m)}</strong></li>`);
-        html += '</ul>';
-      }
-      if (fb.suggestions && fb.suggestions.length) {
-        html += '<h3>💡 Suggestions</h3><ul>';
-        fb.suggestions.forEach(s => html += `<li>${escHtml(s)}</li>`);
-        html += '</ul>';
-      }
-      if (!fb.errors && !fb.explanation) {
-        html += `<p>${escHtml(data.raw || 'Analysis complete.')}</p>`;
-      }
-      html += '</div>';
-      setFeedback(html);
-
-      incrementStat('stat-analyses');
-      await loadWeaknesses();
-      showToast('Analysis complete!', 'success');
-    } catch (e) {
-      setFeedback(`<span style="color:var(--danger)">Error: ${escHtml(e.message)}</span>`);
-      showToast('Analysis failed: ' + e.message, 'error');
-    } finally {
-      hideLoading();
-    }
-  }
-
-  // ── Helpers ───────────────────────────────────────────────
-  function clearEditor() {
-    document.getElementById('code-editor').value = '';
-    setFeedback('<span class="feedback-empty">// Run analysis to see feedback here…</span>');
-  }
-
-  function setFeedback(html) {
-    document.getElementById('feedback-panel').innerHTML = html;
-  }
-
-  async function loadWeaknesses() {
-    try {
-      const res = await fetch('/weaknesses');
-      const data = await res.json();
-      const list = document.getElementById('weakness-list');
-
-      if (!data.weaknesses || !data.weaknesses.length) {
-        list.innerHTML = '<span style="color:var(--text-dim);font-family:var(--mono);font-size:0.8rem;">No weaknesses tracked yet.</span>';
-        document.getElementById('stat-weaknesses').textContent = '0';
-        document.getElementById('stat-score').textContent = '0';
         return;
       }
 
-      let totalScore = 0;
-      list.innerHTML = data.weaknesses.map(w => {
-        totalScore += (w.score || 1);
-        const cls = w.score >= 3 ? 'high' : w.score === 2 ? 'med' : 'low';
-        return `<span class="weakness-tag ${cls}"><span class="score-dot"></span>${escHtml(w.topic)} (${escHtml(w.language)}) ×${w.score}</span>`;
-      }).join('');
+      // ── Init page ───────────────────────────────────────────
+      loadWeaknesses();
 
-      document.getElementById('stat-weaknesses').textContent = data.weaknesses.length;
-      document.getElementById('stat-score').textContent = totalScore;
-    } catch (e) {
-      console.error('Failed to load weaknesses:', e);
+      // Sync lang badge with selector
+      document.getElementById('lang-select').addEventListener('change', function () {
+        document.getElementById('lang-badge').textContent = this.value;
+      });
+    });
+
+    // ── Analyze Code ─────────────────────────────────────────
+    async function analyzeCode() {
+      const code = document.getElementById('code-editor').value.trim();
+      const language = document.getElementById('lang-select').value;
+      if (!code) { showToast('Please enter some code first.', 'error'); return; }
+
+      showLoading('Analyzing your code with AI…');
+      setFeedback('<div style="display:flex;align-items:center;gap:0.75rem;color:var(--text-muted)"><div class="spinner"></div> Analyzing…</div>');
+
+      try {
+        const res = await fetch('/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, language })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Analysis failed');
+
+        // Render feedback
+        const fb = data.feedback || {};
+        let html = '<div class="feedback-content">';
+        if (fb.errors && fb.errors.length) {
+          html += '<h3>🔴 Errors Found</h3><ul>';
+          fb.errors.forEach(e => html += `<li>${escHtml(e)}</li>`);
+          html += '</ul>';
+        }
+        if (fb.explanation) {
+          html += `<h3>📖 Explanation</h3><p>${escHtml(fb.explanation)}</p>`;
+        }
+        if (fb.mistakes && fb.mistakes.length) {
+          html += '<h3>🏷️ Mistake Types</h3><ul>';
+          fb.mistakes.forEach(m => html += `<li><strong>${escHtml(m)}</strong></li>`);
+          html += '</ul>';
+        }
+        if (fb.suggestions && fb.suggestions.length) {
+          html += '<h3>💡 Suggestions</h3><ul>';
+          fb.suggestions.forEach(s => html += `<li>${escHtml(s)}</li>`);
+          html += '</ul>';
+        }
+        if (!fb.errors && !fb.explanation) {
+          html += `<p>${escHtml(data.raw || 'Analysis complete.')}</p>`;
+        }
+        html += '</div>';
+        setFeedback(html);
+
+        incrementStat('stat-analyses');
+        await loadWeaknesses();
+        showToast('Analysis complete!', 'success');
+      } catch (e) {
+        setFeedback(`<span style="color:var(--danger)">Error: ${escHtml(e.message)}</span>`);
+        showToast('Analysis failed: ' + e.message, 'error');
+      } finally {
+        hideLoading();
+      }
     }
-  }
 
-  function incrementStat(id) {
-    const el = document.getElementById(id);
-    const val = parseInt(el.textContent) || 0;
-    el.textContent = val + 1;
-  }
-</script>
+    // ── Helpers ───────────────────────────────────────────────
+    function clearEditor() {
+      document.getElementById('code-editor').value = '';
+      setFeedback('<span class="feedback-empty">// Run analysis to see feedback here…</span>');
+    }
+
+    function setFeedback(html) {
+      document.getElementById('feedback-panel').innerHTML = html;
+    }
+
+    async function loadWeaknesses() {
+      try {
+        const res = await fetch('/weaknesses');
+        const data = await res.json();
+        const list = document.getElementById('weakness-list');
+
+        if (!data.weaknesses || !data.weaknesses.length) {
+          list.innerHTML = '<span style="color:var(--text-dim);font-family:var(--mono);font-size:0.8rem;">No weaknesses tracked yet.</span>';
+          document.getElementById('stat-weaknesses').textContent = '0';
+          document.getElementById('stat-score').textContent = '0';
+          return;
+        }
+
+        let totalScore = 0;
+        list.innerHTML = data.weaknesses.map(w => {
+          totalScore += (w.score || 1);
+          const cls = w.score >= 3 ? 'high' : w.score === 2 ? 'med' : 'low';
+          return `<span class="weakness-tag ${cls}"><span class="score-dot"></span>${escHtml(w.topic)} (${escHtml(w.language)}) ×${w.score}</span>`;
+        }).join('');
+
+        document.getElementById('stat-weaknesses').textContent = data.weaknesses.length;
+        document.getElementById('stat-score').textContent = totalScore;
+      } catch (e) {
+        console.error('Failed to load weaknesses:', e);
+      }
+    }
+
+    function incrementStat(id) {
+      const el = document.getElementById(id);
+      const val = parseInt(el.textContent) || 0;
+      el.textContent = val + 1;
+    }
+  </script>
 </body>
+
 </html>

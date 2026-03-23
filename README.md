@@ -185,19 +185,3 @@ The **weakness score** drives everything:
 | GET | /health | Check API + key config status |
 
 ---
-
-## Groq Models Available
-
-Change `GROQ_MODEL` in `main.py`:
-- `qwen-qwq-32b` (default, excellent for code)
-- `mixtral-8x7b-32768` (fast, good quality)
-- `llama-3.3-70b-versatile` (powerful)
-- `gemma2-9b-it` (lightweight)
-
----
-
-## Notes for Hackathon Demo
-
-- Without Hindsight keys, the system **still works** — memory calls are gracefully skipped
-- Without Groq key, analysis endpoints will return a 500 with a clear message
-- The frontend is fully served by Node.js — no separate static server needed
